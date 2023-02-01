@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -122,6 +125,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     diagTab.addDouble("Left speed", m_leftEncoder::getRate);
     ntRightSpeed = diagTab.add("Right Speed", 0).getEntry();
+    diagTab.add("DiffDrive", m_drive)
+       .withWidget(BuiltInWidgets.kDifferentialDrive)
+       .withProperties(Map.of("show velocity vectors", true));
   }
 
   @Override
