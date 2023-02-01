@@ -75,6 +75,11 @@ public class DriveSubsystem extends SubsystemBase {
   private final ADXRS450_GyroSim m_gyroSim;
 
   ShuffleboardTab diagTab = Shuffleboard.getTab("diag");
+  // This 'GenericEntry' is a NetworkTables entry that goes with a
+  // specific component added to shuffleboard.  A GenericEntry is
+  // returned through getEntry() below.
+  // The name 'ntRightSpeed' is "network tables Right Speed".
+  // With a generic entry you can 'setDouble' or 'setString'...
   GenericEntry ntRightSpeed;
 
 
@@ -123,8 +128,19 @@ public class DriveSubsystem extends SubsystemBase {
       m_fieldSim = null;
     }
 
+    // Here we add a Double entry to the shuffleboard tab
+    // and give it a double provider (m_leftEncoder.getRate)
+    // then, the framework handles updating it all by itself.
     diagTab.addDouble("Left speed", m_leftEncoder::getRate);
+
+    // Adding the "Right speed" in a different manner than LeftSpeed
+    // above means that we have to update the value ourselves.
+    // We do that below in the periodic method.
     ntRightSpeed = diagTab.add("Right Speed", 0).getEntry();
+
+    // This is an example of adding one of the BuiltinWidgets
+    // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/shuffleboard/BuiltInWidgets.html
+    // Its a really nice looking robot picture and drive.
     diagTab.add("DiffDrive", m_drive)
        .withWidget(BuiltInWidgets.kDifferentialDrive)
        .withProperties(Map.of("show velocity vectors", true));
