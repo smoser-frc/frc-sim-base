@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class DriveSubsystem extends SubsystemBase {
   // The motors on the left side of the drive.
@@ -68,6 +71,10 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_fieldSim;
   private final ADXRS450_GyroSim m_gyroSim;
 
+  ShuffleboardTab diagTab = Shuffleboard.getTab("diag");
+  GenericEntry ntRightSpeed;
+
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // We need to invert one side of the drivetrain so that positive voltages
@@ -112,6 +119,9 @@ public class DriveSubsystem extends SubsystemBase {
 
       m_fieldSim = null;
     }
+
+    diagTab.addDouble("Left speed", m_leftEncoder::getRate);
+    ntRightSpeed = diagTab.add("Right Speed", 0).getEntry();
   }
 
   @Override
@@ -122,6 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftEncoder.getDistance(),
         m_rightEncoder.getDistance());
     m_fieldSim.setRobotPose(getPose());
+    ntRightSpeed.setDouble(m_rightEncoder.getRate());
   }
 
   @Override
